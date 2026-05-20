@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYURVRITTI - Panchakarma and Wellness Clinic</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen with Hand Grinder Animation -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-container">
+            <div class="grinder-wrapper">
+                <div class="grinder-pestle">
+                    <i class="fas fa-mortar-pestle"></i>
+                </div>
+                <div class="grinder-particles">
+                    <span class="particle"></span>
+                    <span class="particle"></span>
+                    <span class="particle"></span>
+                    <span class="particle"></span>
+                    <span class="particle"></span>
+                </div>
+            </div>
+            <p class="loading-text">Grinding wellness for you...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="logo.png" alt="AYURVRITTI Logo">
+                </div>
+                <div class="clinic-name">AYURVRITTI PANCHAKARMA AND WELLNESS CLINIC</div>
+            </div>
+            <nav>
+                <a href="#services">Services</a>
+                <a href="#panchakarma">Panchakarma</a>
+                <a href="#doctors">Doctor</a>
+                <a href="#contact">Contact Us</a>
+                <a class="btn-appointment" onclick="openAppointmentModal()">Book Appointment</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <img src="welcomebanner.png" alt="Welcome to AYURVRITTI" class="hero-banner">
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome to AYURVRITTI</h1>
+                <p class="hero-subtitle">"Your Health is our commitment"</p>
+            </div>
+            <button class="know-more-btn" onclick="scrollToServices()">
+                <span>Know More</span>
+                <span class="arrow">»</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-heartbeat"></i></div>
+                    <h3>Diabetes Care</h3>
+                    <p>Specialized Ayurvedic treatment protocols for diabetes management and blood sugar regulation.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-spa"></i></div>
+                    <h3>Skin Care</h3>
+                    <p>Natural herbal treatments for various skin conditions, promoting clear and healthy skin.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-weight"></i></div>
+                    <h3>Weight Management</h3>
+                    <p>Customized Ayurvedic programs to achieve healthy weight through natural methods.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-bone"></i></div>
+                    <h3>Multiple Joint Disorders</h3>
+                    <p>Effective treatments for arthritis, joint pain, and mobility issues using traditional therapies.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-brain"></i></div>
+                    <h3>Spinal Cord Disorders</h3>
+                    <p>Specialized care for spinal health issues, back pain, and nervous system disorders.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-female"></i></div>
+                    <h3>Gynaecological Diseases</h3>
+                    <p>Comprehensive women's health treatments addressing menstrual, fertility, and hormonal issues.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Immune Booster</h3>
+                    <p>Herbal remedies and treatments to strengthen immunity and enhance overall vitality.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctor Details Section -->
+    <section class="doctors" id="doctors">
+        <div class="container">
+            <h2 class="section-title">Our Expert Doctor</h2>
+            <div class="doctors-grid" style="grid-template-columns: 1fr; max-width: 600px; margin: 0 auto;">
+                <div class="doctor-card">
+                    <div class="doctor-badge">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="doctor-info">
+                        <h3>Dr. P. Ramya</h3>
+                        <div class="doctor-designation">B.A.M.S</div>
+                        <div class="doctor-credentials">
+                            <span class="credential-badge">Ayurvedic Specialist</span>
+                            <span class="credential-badge">Panchakarma Expert</span>
+                        </div>
+                        <p>Experienced Ayurvedic practitioner specializing in Panchakarma treatments and comprehensive wellness programs. Dedicated to providing authentic Ayurvedic care for various chronic and acute conditions.</p>
+                        <div class="expertise">
+                            <strong>Areas of Expertise:</strong>
+                            <ul>
+                                <li>Panchakarma Treatments</li>
+                                <li>Chronic Diseases Management</li>
+                                <li>Women's Health</li>
+                                <li>Wellness Programs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Panchakarma Treatments Section -->
+    <section class="doctors" id="panchakarma" style="background-color: var(--off-white);">
+        <div class="container">
+            <h2 class="section-title">Panchakarma Treatments</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="treatment-image">
+                        <img src="shirodhara.jpg" alt="Shirodhara Treatment">
+                    </div>
+                    <div class="service-icon"><i class="fas fa-spa"></i></div>
+                    <h3>Shirodhara</h3>
+                    <p>Calms the mind, reduces stress and anxiety. Improves sleep quality and mental clarity through continuous oil flow.</p>
+                </div>
+                <div class="service-card">
+                    <div class="treatment-image">
+                        <img src="abhyangam.jpg" alt="Abhyangam Treatment">
+                    </div>
+                    <div class="service-icon"><i class="fas fa-hand-paper"></i></div>
+                    <h3>Abhyangam</h3>
+                    <p>Detoxifies the body, improves blood circulation, relieves pain and stiffness. Nourishes skin and muscles deeply.</p>
+                </div>
+                <div class="service-card">
+                    <div class="treatment-image">
+                        <img src="swedana.jpg" alt="Swedana Treatment">
+                    </div>
+                    <div class="service-icon"><i class="fas fa-wind"></i></div>
+                    <h3>Swedana</h3>
+                    <p>Relieves stiffness, improves mobility and detoxifies. Beneficial for joint disorders and muscle pain.</p>
+                </div>
+                <div class="service-card">
+                    <div class="treatment-image">
+                        <img src="vasti.jpg" alt="Vasti Treatment">
+                    </div>
+                    <div class="service-icon"><i class="fas fa-tint"></i></div>
+                    <h3>Vasti</h3>
+                    <p>Cleanses the colon, balances Vata dosha. Improves digestion and overall gut health naturally.</p>
+                </div>
+                <div class="service-card">
+                    <div class="treatment-image">
+                        <img src="nasya.jpg" alt="Nasya Treatment">
+                    </div>
+                    <div class="service-icon"><i class="fas fa-nose"></i></div>
+                    <h3>Nasya</h3>
+                    <p>Clears sinuses, improves respiration and mental clarity. Beneficial for headaches and breathing issues.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>AYURVRITTI</h3>
+                <p>PANCHAKARMA AND WELLNESS CLINIC</p>
+                <p style="font-size: 13px; margin-top: 10px;">Healing • Detox • Rejuvenation</p>
+                <div class="contact-info">
+                    <a href="tel:+917358368399">
+                        <span class="icon"><i class="fas fa-phone"></i></span>
+                        <span>+91-7358368399</span>
+                    </a>
+                    <a href="mailto:ayurvriti01@gmail.com">
+                        <span class="icon"><i class="fas fa-envelope"></i></span>
+                        <span>ayurvriti01@gmail.com</span>
+                    </a>
+                    <span>
+                        <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                        <span>E 314, Jagannathan Salai, Periyar Nagar West, Perambur, Chennai, Tamil Nadu 600082</span>
+                    </span>
+                    <span>
+                        <span class="icon"><i class="fas fa-location-dot"></i></span>
+                        <span class="landmark">Near Periyar Nagar EB Office</span>
+                    </span>
+                    <a href="https://www.instagram.com/ayur.vritti_/" target="_blank">
+                        <span class="icon"><i class="fab fa-instagram"></i></span>
+                        <span>@ayur.vritti_</span>
+                    </a>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2026 AYURVRITTI. All rights reserved.</p>
+                </div>
+            </div>
+            <div class="footer-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3551.777342184275!2d80.21795557465364!3d13.117857387211131!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52654a79687c51%3A0xb2535e08d1722039!2sAYURVRITTI%20PANCHAKARMA%20AND%20WELLNESS%20CLINIC!5e1!3m2!1sen!2sin!4v1779291846434!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Appointment Modal -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAppointmentModal()">&times;</span>
+            <h2>Book Your Appointment</h2>
+            <form onsubmit="submitAppointment(event)">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Select Date *</label>
+                    <div id="datePicker" class="date-picker"></div>
+                    <input type="hidden" id="date" required>
+                    <p id="selectedDate" style="margin-top: 10px; font-weight: bold; color: #1a5f3f;"></p>
+                </div>
+                <div class="form-group" id="timeSlotGroup" style="display: none;">
+                    <label>Select Time *</label>
+                    <div id="timeSlots" class="time-slots-container"></div>
+                    <input type="hidden" id="time" required>
+                    <p id="selectedTime" style="margin-top: 10px; font-weight: bold; color: #1a5f3f;"></p>
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason for Consultation *</label>
+                    <textarea id="reason" placeholder="Please describe your reason for consultation..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Confirm Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
