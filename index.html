@@ -35,13 +35,18 @@
                     <img src="logo.png" alt="AYURVRITTI Logo">
                 </div>
                 <div class="clinic-name">AYURVRITTI PANCHAKARMA AND WELLNESS CLINIC</div>
+                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-            <nav>
+            <nav class="nav-menu" id="navMenu">
                 <a href="#services">Services</a>
                 <a href="#panchakarma">Panchakarma</a>
                 <a href="#doctors">Doctor</a>
                 <a href="#contact">Contact Us</a>
-                <a class="btn-appointment" onclick="openAppointmentModal()">Book Appointment</a>
+                <button class="btn-appointment" id="bookBtn" type="button" onclick="openAppointmentModal()">Book Appointment</button>
             </nav>
         </div>
     </header>
@@ -109,29 +114,10 @@
     <section class="doctors" id="doctors">
         <div class="container">
             <h2 class="section-title">Our Expert Doctor</h2>
-            <div class="doctors-grid" style="grid-template-columns: 1fr; max-width: 600px; margin: 0 auto;">
-                <div class="doctor-card">
-                    <div class="doctor-badge">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <div class="doctor-info">
-                        <h3>Dr. P. Ramya</h3>
-                        <div class="doctor-designation">B.A.M.S</div>
-                        <div class="doctor-credentials">
-                            <span class="credential-badge">Ayurvedic Specialist</span>
-                            <span class="credential-badge">Panchakarma Expert</span>
-                        </div>
-                        <p>Experienced Ayurvedic practitioner specializing in Panchakarma treatments and comprehensive wellness programs. Dedicated to providing authentic Ayurvedic care for various chronic and acute conditions.</p>
-                        <div class="expertise">
-                            <strong>Areas of Expertise:</strong>
-                            <ul>
-                                <li>Panchakarma Treatments</li>
-                                <li>Chronic Diseases Management</li>
-                                <li>Women's Health</li>
-                                <li>Wellness Programs</li>
-                            </ul>
-                        </div>
-                    </div>
+            <div class="doctors-grid">
+                <div class="doctor-card-image fade-in-up">
+                    <img src="doccardpc.png" alt="Dr. P. Ramya" class="doc-card-pc">
+                    <img src="doccardm.png" alt="Dr. P. Ramya" class="doc-card-mobile">
                 </div>
             </div>
         </div>
@@ -203,18 +189,18 @@
                         <span class="icon"><i class="fas fa-envelope"></i></span>
                         <span>ayurvriti01@gmail.com</span>
                     </a>
-                    <span>
-                        <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
-                        <span>E 314, Jagannathan Salai, Periyar Nagar West, Perambur, Chennai, Tamil Nadu 600082</span>
-                    </span>
-                    <span>
-                        <span class="icon"><i class="fas fa-location-dot"></i></span>
-                        <span class="landmark">Near Periyar Nagar EB Office</span>
-                    </span>
                     <a href="https://www.instagram.com/ayur.vritti_/" target="_blank">
                         <span class="icon"><i class="fab fa-instagram"></i></span>
                         <span>@ayur.vritti_</span>
                     </a>
+                    <span>
+                        <span class="icon"><i class="fas fa-clock"></i></span>
+                        <span><strong>Clinic Timings:</strong><br>Mon-Sat: 10:00 AM - 1:00 PM, 5:00 PM - 8:00 PM<br>Sunday: 10:00 AM - 1:00 PM</span>
+                    </span>
+                    <span>
+                        <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                        <span>E 314, Jagannathan Salai, Periyar Nagar West, Perambur, Chennai, Tamil Nadu 600082</span>
+                    </span>
                 </div>
                 <div class="footer-bottom">
                     <p>© 2026 AYURVRITTI. All rights reserved.</p>
@@ -229,7 +215,7 @@
     <!-- Appointment Modal -->
     <div id="appointmentModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeAppointmentModal()">&times;</span>
+            <span class="close" onclick="document.getElementById('appointmentModal').style.display='none'">&times;</span>
             <h2>Book Your Appointment</h2>
             <form onsubmit="submitAppointment(event)">
                 <div class="form-group">

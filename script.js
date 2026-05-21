@@ -1,14 +1,52 @@
 // Loading Screen Initialization
-window.addEventListener('DOMContentLoaded', function() {
-    // Loading screen will auto-fade after 2 seconds due to CSS animation
-    // This event ensures the page is fully loaded before hiding the overlay
-    setTimeout(() => {
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        if (loadingOverlay) {
-            loadingOverlay.style.display = 'none';
-        }
-    }, 2600); // Slightly more than 2 seconds to account for animation duration
-});
+console.log("Script.js loaded!");
+
+// Hamburger menu functionality - make it global
+window.setupHamburgerMenu = function setupHamburgerMenu() {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    
+    console.log("setupHamburgerMenu called - hamburger:", hamburger, "navMenu:", navMenu);
+    
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function() {
+            console.log("Hamburger clicked");
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('mobile-open');
+        });
+        
+        // Close menu when a link is clicked
+        navMenu.querySelectorAll('a, button').forEach(item => {
+            item.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('mobile-open');
+            });
+        });
+        console.log("Hamburger menu setup complete");
+    } else {
+        console.error("Hamburger or navMenu not found!");
+    }
+};
+
+// Call setupHamburgerMenu when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOMContentLoaded event fired");
+        window.setupHamburgerMenu();
+        
+        // Loading screen will auto-fade after 2 seconds due to CSS animation
+        setTimeout(() => {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        }, 2600);
+    });
+} else {
+    // DOM is already loaded
+    console.log("DOM already loaded, calling setupHamburgerMenu immediately");
+    window.setupHamburgerMenu();
+}
 
 // Smooth Scroll to Contact Section
 document.querySelectorAll('a[href="#contact"]').forEach(link => {
@@ -21,29 +59,82 @@ document.querySelectorAll('a[href="#contact"]').forEach(link => {
     });
 });
 
+// Initialize animations on page scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-up');
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+// Observe elements that need animation
+document.addEventListener('DOMContentLoaded', () => {
+    const elementsToAnimate = document.querySelectorAll('.section-title, .panchakarma .service-card, .doctors-grid');
+    elementsToAnimate.forEach(el => {
+        if (!el.classList.contains('fade-in-up')) {
+            observer.observe(el);
+        }
+    });
+});
+
 // Google Apps Script URL - Replace with your deployed script URL
-const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEoPHm5uzqf40Om94H5WT3AP_dNEtMwxeD7omDPw3HeMYbrUmL-rF7Ud0ZZnay2gcVxQ/exec";
+const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg-ZP_HXNnC5elZQ7Cc7lG8uBRFDDOa21EaLXtZ1bncJ2LUjbXIOLkr_cOr0W58Jz_SQ/exec";
 
 // Time slot configuration
 const TIME_SLOTS = {
     morning: ["10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "13:00"],
-    evening: ["18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:15", "20:30"]
+    evening: ["17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00"]
 };
 
 let bookedSlots = {};
 let selectedDate = null;
 let selectedTime = null;
 
-// Appointment Modal Functions
-function openAppointmentModal() {
-    document.getElementById("appointmentModal").style.display = "block";
-    initializeForm();
-}
+// Make these variables globally accessible
+window.selectedDate = selectedDate;
+window.selectedTime = selectedTime;
+window.bookedSlots = bookedSlots;
 
-function closeAppointmentModal() {
-    document.getElementById("appointmentModal").style.display = "none";
-    resetForm();
-}
+// Appointment Modal Functions - GLOBAL SCOPE
+window.openAppointmentModal = function openAppointmentModal() {
+    console.log("openAppointmentModal called");
+    const modal = document.getElementById("appointmentModal");
+    console.log("Modal element:", modal);
+    
+    if (modal) {
+        modal.style.display = "block";
+        console.log("Modal display set to:", modal.style.display);
+        console.log("Modal visibility:", window.getComputedStyle(modal).display);
+        
+        if (window.initializeForm) {
+            window.initializeForm();
+            console.log("initializeForm called");
+        } else {
+            console.error("initializeForm not found");
+        }
+    } else {
+        console.error("Modal element appointmentModal not found in DOM");
+    }
+};
+
+window.closeAppointmentModal = function closeAppointmentModal() {
+    console.log("closeAppointmentModal called");
+    const modal = document.getElementById("appointmentModal");
+    if (modal) {
+        modal.style.display = "none";
+        console.log("Modal closed");
+        if (window.resetForm) {
+            window.resetForm();
+        }
+    }
+};
 
 function initializeForm() {
     generateDatePicker();
@@ -54,7 +145,10 @@ function initializeForm() {
 }
 
 function resetForm() {
-    document.querySelectorAll('#appointmentModal form')[0].reset();
+    const form = document.querySelectorAll('#appointmentModal form')[0];
+    if (form) {
+        form.reset();
+    }
     document.getElementById("date").value = "";
     document.getElementById("time").value = "";
     document.getElementById("selectedDate").textContent = "";
@@ -63,16 +157,25 @@ function resetForm() {
     selectedTime = null;
 }
 
-// Generate date picker with 5 available weekdays (excluding weekends)
+// Expose to global scope
+window.initializeForm = initializeForm;
+window.resetForm = resetForm;
+
+// Generate date picker with 5 available weekdays (starting from today)
 function generateDatePicker() {
     const datePickerContainer = document.getElementById("datePicker");
+    if (!datePickerContainer) {
+        console.error("datePicker element not found");
+        return;
+    }
+    
     datePickerContainer.innerHTML = "";
     
     const today = new Date();
     const availableDates = [];
     let daysAdded = 0;
     let checkDate = new Date(today);
-    checkDate.setDate(checkDate.getDate() + 1); // Start from tomorrow
+    // Start from today (no +1)
     
     // Get next 5 available weekdays (skip Saturday=6 and Sunday=0)
     while (daysAdded < 5) {
@@ -145,16 +248,19 @@ async function selectDate(dateKey, button) {
 async function fetchBookedSlots(date) {
     try {
         const response = await fetch(GOOGLE_APPS_SCRIPT_URL + "?action=getBookedSlots&date=" + date, {
-            method: 'GET',
-            mode: 'no-cors'
+            method: 'GET'
         });
         
-        // Since we're using no-cors, we can't directly parse JSON
-        // We'll fetch from Google Sheets API in the backend function
-        // For now, assume response is handled by server
-        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.bookedSlots) {
+                // Update global bookedSlots with new data
+                Object.assign(bookedSlots, data.bookedSlots);
+                console.log("Booked slots loaded for date:", date, data.bookedSlots);
+            }
+        }
     } catch (error) {
-        console.log("Loading booked slots...");
+        console.log("Error loading booked slots:", error);
     }
 }
 
@@ -162,6 +268,10 @@ async function fetchBookedSlots(date) {
 function displayTimeSlots(dateKey) {
     const timeSlotContainer = document.getElementById("timeSlots");
     timeSlotContainer.innerHTML = "";
+    
+    // Get the day of week from dateKey
+    const date = new Date(dateKey);
+    const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
     
     // Morning slots
     const morningLabel = document.createElement("div");
@@ -190,31 +300,33 @@ function displayTimeSlots(dateKey) {
         timeSlotContainer.appendChild(btn);
     });
     
-    // Evening slots
-    const eveningLabel = document.createElement("div");
-    eveningLabel.style.gridColumn = "1 / -1";
-    eveningLabel.style.fontWeight = "bold";
-    eveningLabel.style.marginTop = "10px";
-    eveningLabel.textContent = "Evening (6:00 PM - 8:30 PM)";
-    timeSlotContainer.appendChild(eveningLabel);
-    
-    TIME_SLOTS.evening.forEach(time => {
-        const slotKey = `${dateKey}_${time}`;
-        const isBooked = bookedSlots[slotKey] && bookedSlots[slotKey] !== "Others";
+    // Evening slots - only show if not Sunday (0)
+    if (dayOfWeek !== 0) {
+        const eveningLabel = document.createElement("div");
+        eveningLabel.style.gridColumn = "1 / -1";
+        eveningLabel.style.fontWeight = "bold";
+        eveningLabel.style.marginTop = "10px";
+        eveningLabel.textContent = "Evening (5:00 PM - 8:00 PM)";
+        timeSlotContainer.appendChild(eveningLabel);
         
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = `time-slot ${isBooked ? "booked" : "available"}`;
-        btn.textContent = formatTimeDisplay(time);
-        
-        if (isBooked) {
-            btn.disabled = true;
-        } else {
-            btn.onclick = () => selectTime(time, slotKey, btn);
-        }
-        
-        timeSlotContainer.appendChild(btn);
-    });
+        TIME_SLOTS.evening.forEach(time => {
+            const slotKey = `${dateKey}_${time}`;
+            const isBooked = bookedSlots[slotKey] && bookedSlots[slotKey] !== "Others";
+            
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = `time-slot ${isBooked ? "booked" : "available"}`;
+            btn.textContent = formatTimeDisplay(time);
+            
+            if (isBooked) {
+                btn.disabled = true;
+            } else {
+                btn.onclick = () => selectTime(time, slotKey, btn);
+            }
+            
+            timeSlotContainer.appendChild(btn);
+        });
+    }
     
     // Others option
     const othersBtn = document.createElement("button");
@@ -240,7 +352,7 @@ function selectTime(time, slotKey, button) {
 }
 
 // Submit appointment form
-function submitAppointment(event) {
+window.submitAppointment = function submitAppointment(event) {
     event.preventDefault();
     
     // Validate date and time selection
@@ -299,8 +411,77 @@ window.onclick = function(event) {
     const modal = document.getElementById("appointmentModal");
     if (event.target == modal) {
         modal.style.display = "none";
-        resetForm();
+        console.log("Modal closed via outside click");
+        if (window.resetForm) {
+            window.resetForm();
+        }
     }
+}
+
+// Expose all critical functions to global scope
+window.generateDatePicker = generateDatePicker;
+window.selectDate = selectDate;
+window.displayTimeSlots = displayTimeSlots;
+window.selectTime = selectTime;
+window.formatDate = formatDate;
+window.formatDisplayDate = formatDisplayDate;
+window.formatTimeDisplay = formatTimeDisplay;
+
+// Function to initialize form when opening modal
+window.openFormModal = function() {
+    document.getElementById('appointmentModal').style.display = 'block';
+    selectedDate = null;
+    selectedTime = null;
+    document.getElementById('timeSlotGroup').style.display = 'none';
+    generateDatePicker();
+};
+
+// Fallback handler for book button
+window.handleBookClick = function() {
+    console.log("handleBookClick called");
+    try {
+        document.getElementById('appointmentModal').style.display = 'block';
+        selectedDate = null;
+        selectedTime = null;
+        document.getElementById('timeSlotGroup').style.display = 'none';
+        if (window.generateDatePicker) {
+            window.generateDatePicker();
+        }
+        console.log("Modal opened successfully");
+    } catch (error) {
+        console.error("Error in handleBookClick:", error);
+        alert("Error opening appointment form: " + error.message);
+    }
+};
+
+// Add event listener to Book Appointment button
+function attachBookButtonListener() {
+    const bookBtn = document.getElementById('bookBtn');
+    console.log("Looking for bookBtn...", bookBtn);
+    
+    if (bookBtn) {
+        console.log("Book button found! Attaching listener...");
+        bookBtn.addEventListener('click', function(e) {
+            console.log("Book button clicked!");
+            e.preventDefault();
+            document.getElementById('appointmentModal').style.display = 'block';
+            selectedDate = null;
+            selectedTime = null;
+            document.getElementById('timeSlotGroup').style.display = 'none';
+            generateDatePicker();
+            console.log("Modal opened and date picker generated");
+        });
+    } else {
+        console.log("Book button not found yet, retrying...");
+        setTimeout(attachBookButtonListener, 500);
+    }
+}
+
+// Try to attach listener when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachBookButtonListener);
+} else {
+    attachBookButtonListener();
 }
 
 // Smooth scrolling for navigation links
@@ -317,7 +498,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Know More button scroll functionality
-function scrollToServices() {
+window.scrollToServices = function scrollToServices() {
     const servicesSection = document.getElementById('services');
     if (servicesSection) {
         servicesSection.scrollIntoView({
