@@ -421,7 +421,7 @@ window.submitAppointment = function submitAppointment(event) {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain;charset=utf-8'
         }
     })
     .then(response => response.json())
