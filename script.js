@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Google Apps Script URL - Replace with your deployed script URL
-const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg-ZP_HXNnC5elZQ7Cc7lG8uBRFDDOa21EaLXtZ1bncJ2LUjbXIOLkr_cOr0W58Jz_SQ/exec";
+const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2AWhIVT_iVtz7-qq6otNmL2itt4JrXLHMVigQTzuBQSn1gJU6y5Wdjt2GIb-GMkB6kA/exec";
 
 // Time slot configuration
 const TIME_SLOTS = {
@@ -177,14 +177,11 @@ function generateDatePicker() {
     let checkDate = new Date(today);
     // Start from today (no +1)
     
-    // Get next 5 available weekdays (skip Saturday=6 and Sunday=0)
-    while (daysAdded < 5) {
-        const dayOfWeek = checkDate.getDay();
-        // Skip Saturday (6) and Sunday (0)
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-            availableDates.push(new Date(checkDate));
-            daysAdded++;
-        }
+    // Get next 7 available days (include all days: Monday-Sunday)
+    // Clinic is open: Monday-Saturday (10-1, 5-8), Sunday (10-1 only)
+    while (daysAdded < 7) {
+        availableDates.push(new Date(checkDate));
+        daysAdded++;
         checkDate.setDate(checkDate.getDate() + 1);
     }
     
@@ -231,36 +228,57 @@ async function selectDate(dateKey, button) {
     button.classList.add('selected');
     
     selectedDate = dateKey;
+    window.selectedDate = dateKey;  // Update global scope
     document.getElementById("date").value = dateKey;
     document.getElementById("selectedDate").textContent = `Date selected: ${button.textContent}`;
+    
+    // Show time slot group immediately (before fetching)
+    document.getElementById("timeSlotGroup").style.display = "block";
     
     // Fetch booked slots for this date
     await fetchBookedSlots(dateKey);
     
     // Display time slots
     displayTimeSlots(dateKey);
-    
-    // Show time slot selection
-    document.getElementById("timeSlotGroup").style.display = "block";
 }
 
 // Fetch booked slots from Google Sheets
 async function fetchBookedSlots(date) {
     try {
-        const response = await fetch(GOOGLE_APPS_SCRIPT_URL + "?action=getBookedSlots&date=" + date, {
+        bookedSlots = {};
+        window.bookedSlots = bookedSlots;
+        
+        const url = GOOGLE_APPS_SCRIPT_URL + "?action=getBookedSlots&date=" + date;
+        console.log("📅 Fetching booked slots for date:", date);
+        
+        const response = await fetch(url, {
             method: 'GET'
         });
         
         if (response.ok) {
             const data = await response.json();
-            if (data.bookedSlots) {
-                // Update global bookedSlots with new data
+            console.log("📨 Response received:", data);
+            
+            if (data.bookedSlots && Object.keys(data.bookedSlots).length > 0) {
+                // Clear previous slots for other dates
+                bookedSlots = {};
                 Object.assign(bookedSlots, data.bookedSlots);
-                console.log("Booked slots loaded for date:", date, data.bookedSlots);
+                window.bookedSlots = bookedSlots;
+                console.log("✅ Booked slots FOUND:", bookedSlots);
+                for (let key in bookedSlots) {
+                    console.log(`   - ${key}: ${bookedSlots[key]}`);
+                }
+            } else {
+                console.log("ℹ️ No booked slots for this date");
             }
+        } else {
+            console.error("❌ Response error:", response.statusText);
         }
     } catch (error) {
-        console.log("Error loading booked slots:", error);
+        console.error("❌ Error loading booked slots:", error);
+        bookedSlots = {};
+        window.bookedSlots = bookedSlots;
+        console.warn("⚠️ Booked slots reset due to error. All slots available.");
     }
 }
 
@@ -268,6 +286,9 @@ async function fetchBookedSlots(date) {
 function displayTimeSlots(dateKey) {
     const timeSlotContainer = document.getElementById("timeSlots");
     timeSlotContainer.innerHTML = "";
+    
+    console.log("=== displayTimeSlots called for date:", dateKey);
+    console.log("Current bookedSlots:", bookedSlots);
     
     // Get the day of week from dateKey
     const date = new Date(dateKey);
@@ -283,8 +304,9 @@ function displayTimeSlots(dateKey) {
     
     TIME_SLOTS.morning.forEach(time => {
         const slotKey = `${dateKey}_${time}`;
-        const isBooked = bookedSlots[slotKey] && bookedSlots[slotKey] !== "Others";
-        const isOthers = bookedSlots[slotKey] === "Others";
+        const isBooked = bookedSlots[slotKey] && bookedSlots[slotKey] !== "Others (Flexible)";
+        
+        console.log(`Slot ${slotKey}: booked=${isBooked}, value=${bookedSlots[slotKey]}`);
         
         const btn = document.createElement("button");
         btn.type = "button";
@@ -311,7 +333,10 @@ function displayTimeSlots(dateKey) {
         
         TIME_SLOTS.evening.forEach(time => {
             const slotKey = `${dateKey}_${time}`;
-            const isBooked = bookedSlots[slotKey] && bookedSlots[slotKey] !== "Others";
+            const slotValue = bookedSlots[slotKey];
+            const isBooked = slotValue && slotValue !== "Others (Flexible)";
+            
+            console.log(`Evening Slot ${slotKey}: value='${slotValue}', isBooked=${isBooked}`);
             
             const btn = document.createElement("button");
             btn.type = "button";
@@ -345,6 +370,7 @@ function selectTime(time, slotKey, button) {
     button.classList.add('selected');
     
     selectedTime = time;
+    window.selectedTime = time;  // Update global scope
     document.getElementById("time").value = slotKey;
     
     const timeDisplay = time === "Others" ? "Others (Flexible)" : formatTimeDisplay(time);
@@ -359,6 +385,15 @@ window.submitAppointment = function submitAppointment(event) {
     if (!selectedDate || !selectedTime) {
         alert("Please select both date and time before submitting.");
         return;
+    }
+    
+    // Check for duplicate bookings (front-end validation)
+    if (selectedTime !== "Others") {
+        const slotKey = `${selectedDate}_${selectedTime}`;
+        if (bookedSlots[slotKey] && bookedSlots[slotKey] !== "Others (Flexible)") {
+            alert("This time slot is already booked! Please select another time.");
+            return;
+        }
     }
     
     const name = document.getElementById("name").value;
@@ -385,12 +420,21 @@ window.submitAppointment = function submitAppointment(event) {
     fetch(GOOGLE_APPS_SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify(formData),
-        mode: 'no-cors'
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
-    .then(response => {
-        // Show confirmation popup
-        const confirmationMessage = "Thank you for submitting! We have received your submission and will wait for the call back confirmation.";
-        alert(confirmationMessage);
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log("✅ Appointment confirmed with ID:", data.patientId);
+            const confirmationMessage = "Thank you for submitting! We have received your submission and will wait for the call back confirmation.\n\nPatient ID: " + data.patientId;
+            alert(confirmationMessage);
+        } else {
+            console.error("❌ Server error:", data.error);
+            alert('Error: ' + data.error);
+            return;
+        }
         
         closeAppointmentModal();
         resetForm();
@@ -506,3 +550,25 @@ window.scrollToServices = function scrollToServices() {
         });
     }
 }
+
+// Typewriter effect
+function startTypewriter() {
+    const text = "Welcome to AYURVRITTI";
+    const typingElement = document.getElementById("typing-text");
+
+    let index = 0;
+
+    function type() {
+        if (index < text.length) {
+            typingElement.textContent += text.charAt(index);
+            index++;
+            setTimeout(type, 120); // typing speed
+        }
+    }
+
+    typingElement.textContent = "";
+    type();
+}
+
+// Start when page loads
+document.addEventListener("DOMContentLoaded", startTypewriter);
