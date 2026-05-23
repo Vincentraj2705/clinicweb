@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Google Apps Script URL - Replace with your deployed script URL
-const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2AWhIVT_iVtz7-qq6otNmL2itt4JrXLHMVigQTzuBQSn1gJU6y5Wdjt2GIb-GMkB6kA/exec";
+const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeNeB0tzZpqcCbYIhEN7fndcMCsp0Jmzj-hl1LH10XskR059e5yjLOH40ol2mEp6Hl/exec";
 
 // Time slot configuration
 const TIME_SLOTS = {
